@@ -1,0 +1,74 @@
+---
+title: "chapter_01"
+format: html
+editor: source
+html:
+  self-contained: true
+---
+
+```{r}
+# libraries 
+library(tidyverse)
+library(Lahman)
+```
+
+
+### Question 1.2.8 
+What is the averaged number of home runs per game recorded in each decade? Does the rate of strikeouts show any correlation with the rate of home runs?
+
+First, we need to get the data for home runs per game.  
+```{r}
+#| message: false
+#| code-fold: true
+
+# get Lahman team data 
+teams = Lahman::Teams
+
+# get home runs by decade 
+home_run_by_decade = teams %>% 
+  mutate(decade = paste(substr(yearID, 1, 3), 0, sep = "")) %>% 
+  group_by(decade) %>% 
+  summarize(total_hr = sum(HR), total_g = (sum(G)/2), total_k = sum(SO, na.rm = T), hrpg = total_hr/total_g, kpg = total_k/total_g) %>% 
+  ungroup()
+```
+
+Now we can graph this table to look at the three questions of interest. First, what is the average number of home runs per game for each decade. 
+
+```{r}
+# graph of home runs by decade 
+ggplot(home_run_by_decade, aes(decade, hrpg))+
+  geom_point()+
+  geom_line(aes(group = 1))+
+  theme_minimal()+
+  labs(
+    title = "Home Runs Per Game by Decade",
+    x = "Decade",
+    y = "Home Runs Per Game"
+  ) +
+  theme(
+    plot.title = element_text(face = "bold", size = 20)
+  )
+```
+```{r}
+# strike outs per game by decade 
+ggplot(home_run_by_decade, aes(decade, kpg)) + 
+  geom_point() + 
+  geom_line(group = 1) +
+  theme_minimal() +
+  labs(
+    title = "Strike Outs Per Game",
+    x = "Decade", 
+    y = "Strike Outs Per Game"
+  ) + 
+  theme(
+    plot.title = element_text(face = "bold", size = 20)
+  )
+```
+```{r}
+# both mapped together 
+home_run_by_decade %>% 
+  pivot_longer(cols = hrpg:kpg, names_to = "stat", values_to = "spg") %>% 
+  ggplot(aes(decade, spg, color = stat))+
+  geom_point() + 
+  geom_line()
+```
