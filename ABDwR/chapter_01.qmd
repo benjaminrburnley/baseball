@@ -120,6 +120,31 @@ home_run_by_decade %>%
   )
 ```
 
-
+```{r}
+#| warning: false
+# looking at percent change 
+home_run_by_decade %>% 
+  mutate(hr_delta = (hrpg - lag(hrpg))/lag(hrpg)*100,
+         k_delta = (kpg - lag(kpg))/lag(kpg)*100) %>% 
+  select(decade, hr_delta, k_delta) %>% 
+  mutate(decade = as.numeric(decade)) %>% 
+  pivot_longer(cols = hr_delta:k_delta, names_to = "stat", values_to = "value") %>% 
+  ggplot(aes(x = decade, y = value, color = stat))+
+  scale_color_manual(values = c("darkblue","darkred"), labels = c("Home Runs", "Strikeouts"))+
+  geom_point()+
+  geom_line()+
+  theme_minimal()+
+  labs(
+    title = "Percent Change in HRs and Ks by Decade",
+    x = "Decade",
+    y = "Percent Change",
+    color = NULL
+  )+
+  theme(
+    plot.title = element_text(face = "bold"),
+    axis.title = element_text(face = "italic"),
+    legend.position = "bottom"
+  )
+```
 
 
