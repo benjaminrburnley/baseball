@@ -98,7 +98,10 @@ plot_4040 = function(playerid, player_name, year, color1, color2){
   p1+p2
 }
 
+<<<<<<< HEAD
 # historical plots
+=======
+>>>>>>> 2cce9cdcfde3cb1785f59ce5c195452cdf7389c7
 plot_4040(playerid = 1001918, player_name = "Jose Canseco", year = 1988, color1 = "#003831", color2 = "#EFB21E")
 plot_4040(playerid = 1109, player_name = "Barry Bonds", year = 1996, color1 = "#FD5A1E", color2 = "#27251F")
 plot_4040(playerid = 1274, player_name = "Alex Rodriguez", year = 1998, color1 = "#0C2C56", color2 = "#005C5C")
