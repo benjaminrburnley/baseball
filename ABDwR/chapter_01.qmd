@@ -1,5 +1,5 @@
 ---
-title: "chapter_01"
+title: "Analyzing Baseball Data with R - Chapter 1"
 format: html
 editor: source
 html:
@@ -8,6 +8,8 @@ html:
 
 ```{r}
 #| message: false
+#| include: false
+
 # libraries 
 library(tidyverse)
 library(Lahman)
@@ -15,13 +17,15 @@ library(patchwork)
 ```
 
 
-### Question 1.2.8 
+## Question 1.2.8 - Lahman Database Questions
+
+## Home runs and Strikeouts 
 What is the averaged number of home runs per game recorded in each decade? Does the rate of strikeouts show any correlation with the rate of home runs?
 
 First, we need to get the data for home runs per game.  
 ```{r}
 #| message: false
-#| code-fold: true
+#| include: false
 
 # get Lahman team data 
 teams = Lahman::Teams
@@ -37,6 +41,9 @@ home_run_by_decade = teams %>%
 Now we can graph this table to look at the three questions of interest. First, what is the average number of home runs per game for each decade. 
 
 ```{r}
+#| message: false
+#| code-fold: true
+
 # graph of home runs by decade 
 ggplot(home_run_by_decade, aes(decade, hrpg))+
   geom_point()+
@@ -50,8 +57,14 @@ ggplot(home_run_by_decade, aes(decade, hrpg))+
   theme(
     plot.title = element_text(face = "bold", size = 16)
   )
+
 ```
+Home runs have been increasing over the history of Major League Baseball. In the first 40 years of the game, home runs happened rarely - 0.5 per game. In the early 1900s, home runs began to jump crossing over one per game in the 1930s. The rate of home runs has continued to increase, jumping to over 1.75 in the 1950s and over 2 per game in the 1990s. 
+
 ```{r}
+#| message: false
+#| code-fold: true
+
 # strike outs per game by decade 
 ggplot(home_run_by_decade, aes(decade, kpg)) + 
   geom_point() + 
@@ -66,6 +79,7 @@ ggplot(home_run_by_decade, aes(decade, kpg)) +
     plot.title = element_text(face = "bold", size = 20)
   )
 ```
+Strike outs have increased over time in a slightly different manner. For the first 70 years, the rate of strikeouts was relatively stable. After jumping to around 7.5 per game in the 1880s, strikeouts stablized around 6 per game until 1940. For the 
 ```{r}
 # both mapped together 
 plot1 = ggplot(home_run_by_decade, aes(as.numeric(decade), hrpg))+
@@ -146,5 +160,4 @@ home_run_by_decade %>%
     legend.position = "bottom"
   )
 ```
-
 
