@@ -104,5 +104,5 @@ plot_4040(playerid = 1109, player_name = "Barry Bonds", year = 1996, color1 = "#
 plot_4040(playerid = 1274, player_name = "Alex Rodriguez", year = 1998, color1 = "#0C2C56", color2 = "#005C5C")
 plot_4040(playerid = 847, player_name = "Alfonso Soriano", year = 2006, color1 = "#AB0003", color2 = "#14225A")
 plot_4040(playerid = 18401, player_name = "Ronald Acuña Jr.", year = 2023, color1 = "#ce1141", color2 = "#13274f")
-
+plot_4040(playerid = 18401, player_name = "Ronald Acuña Jr.", year = 2019, color1 = "#ce1141", color2 = "#13274f")
 
