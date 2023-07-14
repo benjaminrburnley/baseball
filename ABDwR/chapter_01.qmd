@@ -1,9 +1,8 @@
 ---
-title: "Analyzing Baseball Data with R - Chapter 1"
-format: html
-editor: source
-html:
-  self-contained: true
+title: "Analyzing Baseball Data with R - Chapter 1d"
+format: 
+  html:
+    self-contained: true
 ---
 
 ```{r}
@@ -81,6 +80,9 @@ ggplot(home_run_by_decade, aes(decade, kpg)) +
 ```
 Strike outs have increased over time in a slightly different manner. For the first 70 years, the rate of strikeouts was relatively stable. After jumping to around 7.5 per game in the 1880s, strikeouts stablized around 6 per game until 1940. For the 
 ```{r}
+#| message: false
+#| code-fold: true
+
 # both mapped together 
 plot1 = ggplot(home_run_by_decade, aes(as.numeric(decade), hrpg))+
   geom_point(color = "darkblue")+
@@ -114,9 +116,12 @@ plot1 + plot2
 ```
 
 ```{r}
+#| message: false
+#| code-fold: true
+
 home_run_by_decade %>% 
   pivot_longer(cols = hrpg:kpg, names_to = "stat", values_to = "spg") %>% 
-  mutate(decade = as.numeric(decade)) %>% 
+  mutate(decade = as.numeric(decade)) %>%
   ggplot(aes(decade, spg, color = stat))+
   geom_point()+
   geom_line()+
@@ -136,6 +141,9 @@ home_run_by_decade %>%
 
 ```{r}
 #| warning: false
+#| message: false
+#| code-fold: true
+
 # looking at percent change 
 home_run_by_decade %>% 
   mutate(hr_delta = (hrpg - lag(hrpg))/lag(hrpg)*100,
