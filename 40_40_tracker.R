@@ -9,7 +9,7 @@ library(patchwork)
 data = fg_batter_game_logs(playerid = 18401, year = 2023) %>% 
   select(Date, HR, SB) %>% 
   rowid_to_column() %>% 
-  mutate(Game = (nrow(data) + 1) - rowid) %>% 
+  mutate(Game = max(rowid) + 1 - rowid) %>% 
   arrange(Game) %>% 
   mutate(hr_total = cumsum(HR),
          sb_total = cumsum(SB))
@@ -57,7 +57,7 @@ plot_4040 = function(playerid, player_name, year, color1, color2){
   pull = fg_batter_game_logs(playerid = playerid, year = year) %>% 
     select(Date, HR, SB) %>% 
     rowid_to_column() %>% 
-    mutate(Game = (nrow(pull) + 1) - rowid) %>% 
+    mutate(Game = max(rowid) + 1 - rowid) %>% 
     arrange(Game) %>% 
     mutate(hr_total = cumsum(HR),
            sb_total = cumsum(SB))
@@ -99,8 +99,10 @@ plot_4040 = function(playerid, player_name, year, color1, color2){
 }
 
 # historical plots
-
 plot_4040(playerid = 1001918, player_name = "Jose Canseco", year = 1988, color1 = "#003831", color2 = "#EFB21E")
 plot_4040(playerid = 1109, player_name = "Barry Bonds", year = 1996, color1 = "#FD5A1E", color2 = "#27251F")
 plot_4040(playerid = 1274, player_name = "Alex Rodriguez", year = 1998, color1 = "#0C2C56", color2 = "#005C5C")
 plot_4040(playerid = 847, player_name = "Alfonso Soriano", year = 2006, color1 = "#AB0003", color2 = "#14225A")
+plot_4040(playerid = 18401, player_name = "Ronald Acuña Jr.", year = 2023, color1 = "#ce1141", color2 = "#13274f")
+
+
