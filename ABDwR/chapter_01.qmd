@@ -13,18 +13,27 @@ format:
 library(tidyverse)
 library(Lahman)
 library(patchwork)
+
+# theme 
+gg_theme = theme_minimal()+
+  theme(
+    plot.title = element_text(face = "bold"),
+    plot.subtitle = element_text(face = "italic"),
+    axis.title = element_text(face = "italic"),
+    legend.position = "bottom"
+  )
 ```
 
 
-## Question 1.2.8 - Lahman Database Questions
+## Lahman Database Questions
 
-## Home runs and Strikeouts 
-What is the averaged number of home runs per game recorded in each decade? Does the rate of strikeouts show any correlation with the rate of home runs?
+### Home Runs and Strikeouts 
+*What is the averaged number of home runs per game recorded in each decade? Does the rate of strikeouts show any correlation with the rate of home runs?*
 
-First, we need to get the data for home runs per game.  
+First, we need to get the data for home runs and strike outs per game.  
 ```{r}
 #| message: false
-#| include: false
+#| include: true
 
 # get Lahman team data 
 teams = Lahman::Teams
@@ -78,7 +87,10 @@ ggplot(home_run_by_decade, aes(decade, kpg)) +
     plot.title = element_text(face = "bold", size = 20)
   )
 ```
-Strike outs have increased over time in a slightly different manner. For the first 70 years, the rate of strikeouts was relatively stable. After jumping to around 7.5 per game in the 1880s, strikeouts stablized around 6 per game until 1940. For the 
+Strike outs have increased over time in a slightly different manner. For the first 70 years, the rate of strikeouts was relatively stable. After jumping to around 7.5 per game in the 1880s, strikeouts stabilized between 6 and 7 per game. From 1920 onward, each decade has featured more strikeouts than the last with one exception - in 1969 MLB moved the mound back a foot, leading to less strikeouts in the 1970s. 
+
+Plotted next to one another, you can see the clear correlation between the two over the decades. 
+
 ```{r}
 #| message: false
 #| code-fold: true
@@ -115,30 +127,7 @@ plot2 = ggplot(home_run_by_decade, aes(as.numeric(decade), kpg)) +
 plot1 + plot2
 ```
 
-```{r}
-#| message: false
-#| code-fold: true
-
-home_run_by_decade %>% 
-  pivot_longer(cols = hrpg:kpg, names_to = "stat", values_to = "spg") %>% 
-  mutate(decade = as.numeric(decade)) %>%
-  ggplot(aes(decade, spg, color = stat))+
-  geom_point()+
-  geom_line()+
-  scale_color_manual(values = c("darkblue","darkred"), labels = c("Home Runs", "Strikouts"))+
-  theme_minimal()+
-  labs(
-    title = "Relationship Between Home Runs and Strikeouts by Decade",
-    x = "Decade",
-    y = "# per Game",
-    color = NULL
-  )+
-  theme(
-    plot.title = element_text(face = "bold"),
-    legend.position = "bottom"
-  )
-```
-
+When you look at the percent increase across the decades, again, it is easy to spot the correlation between these two game events. From 1970 onward, the two have mirrored one another very closely. 
 ```{r}
 #| warning: false
 #| message: false
@@ -169,3 +158,60 @@ home_run_by_decade %>%
   )
 ```
 
+### The Implementation of the Designated Hitter
+*What effect has the introduction of the Designated Hitter (DH) in the American League had in the difference in run scoring between the American and National Leagues?*
+
+Let's explore this a couple of ways. First, lets look simply at the league wide run scoring. We can find this data in the `Teams` table from the `Lahman` package.
+
+```{r}
+Lahman::Teams %>%
+  filter(lgID %in% c("NL", "AL")) %>% 
+  group_by(lgID, yearID) %>% 
+  summarize(r = sum(R)) %>% 
+  ungroup() %>% 
+  filter(yearID > 1959) %>% 
+  ggplot(aes(x = yearID, y = r, color = lgID))+
+  geom_line()+
+  geom_vline(xintercept = 1973, color=  "red")+
+  geom_vline(xintercept = 1981, linetype = "dashed", alpha = 0.2)+
+  geom_vline(xintercept = 1994, linetype = "dashed", alpha = 0.2)+
+  geom_vline(xintercept = 2020, linetype = "dotted", alpha = 0.2)+
+  annotate(geom = "text", x = 1985, y = 12100, label = "1981 Strike", alpha = 0.2)+
+  annotate(geom = "text", x = 1998, y = 13000, label = "1994 Strike", alpha = 0.2)+
+  scale_color_manual(values = c("darkred", "darkblue"))+
+  labs(
+    x = "Year",
+    y = "Total Runs Scored",
+    title = "Runs Scored by League",
+    subtitle = "1960 - Today",
+    color = "League"
+  )+
+  gg_theme
+```
+
+
+## Appendix: 
+Strikouts and home runs plotted on the same axis. 
+```{r}
+#| message: false
+#| code-fold: true
+
+home_run_by_decade %>% 
+  pivot_longer(cols = hrpg:kpg, names_to = "stat", values_to = "spg") %>% 
+  mutate(decade = as.numeric(decade)) %>%
+  ggplot(aes(decade, spg, color = stat))+
+  geom_point()+
+  geom_line()+
+  scale_color_manual(values = c("darkblue","darkred"), labels = c("Home Runs", "Strikouts"))+
+  theme_minimal()+
+  labs(
+    title = "Relationship Between Home Runs and Strikeouts by Decade",
+    x = "Decade",
+    y = "# per Game",
+    color = NULL
+  )+
+  theme(
+    plot.title = element_text(face = "bold"),
+    legend.position = "bottom"
+  )
+```
